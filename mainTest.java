@@ -16,7 +16,7 @@ public class mainTest {
 
            // ImageIO.write(gs.redGrayScale(), "PNG", new File("RedOut.png"));
           //  ImageIO.write(gs.greenGrayScale(), "PNG", new File("GreenOut.png"));
-            ImageIO.write(gs.testScale(), "PNG", new File("AVERAGEOut.png"));
+            ImageIO.write(gs.test(), "PNG", new File("AVERAGEOut.png"));
 
 
 

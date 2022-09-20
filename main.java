@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.File;
 import java.awt.Color;
 
-public class mainTest {
+public class main {
 
     public static void main( String[]arg ){
 

@@ -53,8 +53,8 @@ public class GrayScale {
 
    
 
-    // Average RGB Gray Scale
-    public BufferedImage averageGrayScale(){
+    // true RGB Gray Scale
+    public BufferedImage trueGrayScale(){
         BufferedImage imgCopy = this.img;
         for(int y = 0; y < imgCopy.getHeight(); y++ ){
             for(int x = 0; x < imgCopy.getWidth(); x++){
@@ -80,7 +80,7 @@ public class GrayScale {
             for(int x = 0; x < imgCopy.getWidth(); x++){
                 int pixlInt = imgCopy.getRGB(x, y);
                 Color pixelColor = new Color(pixlInt);
-                pixelnum++;
+                pixelNum++;
                averageAlpha= pixelColor.getAlpha();
             }
         }
@@ -99,10 +99,11 @@ public class GrayScale {
                     imgCopy.setRGB(x, y, outColor.getRGB());
                 }
             }
-            return imgCopy;
+            
         }
+        return imgCopy;
     }
-    public BufferedImage testScale(){
+    public BufferedImage test(){
         BufferedImage imgCopy = this.img;
         for(int y = 0; y < imgCopy.getHeight(); y++ ){
             for(int x = 0; x < imgCopy.getWidth(); x++){
@@ -117,13 +118,51 @@ public class GrayScale {
                 }catch(Exception e){
                     pixelc = imgCopy.getRGB(x, y);
                 }
-                Color pixelColor = new Color(pixlInt);
+                Color pixelColor = new Color(pixelc);
               
-                Color outColor = new Color(r,g,b);
+               // Color outColor = new Color(r,g,b);
                 imgCopy.setRGB(x, y, pixelc);
             }
         }
         return imgCopy;
     }
+
+public BufferedImage blur(){
+    int sumAlpha = 0;
+    int pixelNum = 0;
+    BufferedImage imgCopy = this.img;
+    for(int y = 0; y < imgCopy.getHeight(); y++ ){
+        for(int x = 0; x < imgCopy.getWidth(); x++){
+            int pixlInt = imgCopy.getRGB(x, y);
+            Color pixelColor = new Color(pixlInt);
+            pixelNum++;
+           sumAlpha= pixelColor.getAlpha();
+        }
+    }
+
+    int meanAlpha = sumAlpha/pixelNum;
+    double standardDeviation = 0;
+
+    for(int y = 0; y < imgCopy.getHeight(); y++ ){
+        for(int x = 0; x < imgCopy.getWidth(); x++){
+            int pixlInt = imgCopy.getRGB(x, y);
+            Color pixelColor = new Color(pixlInt);
+            standardDeviation += Math.pow(pixelColor.getAlpha() - meanAlpha, 2);
+            double numberx = Math.pow(x, 2);
+            double numbery =  Math.pow(y, 2);
+            double basis = 2 * (Math.pow(standardDeviation, 2));
+            
+            double blurFormula = ((1)/( 2 * Math.PI * (standardDeviation/pixelNum)) ) * 
+            Math.exp(-((numberx - numbery)/(basis)));
+            
+            int newPixel = (int) (pixlInt * blurFormula) ;
+            imgCopy.set
+        }
+    }
+    
+
+    return null;
+}
+
 
 }
