@@ -74,17 +74,17 @@ public class GrayScale {
     }
     public BufferedImage binaryPhoto(){
         int averageAlpha = 0;
-        int pixelNum = 0;
+        int totalPixels = 0;
         BufferedImage imgCopy = this.img;
         for(int y = 0; y < imgCopy.getHeight(); y++ ){
             for(int x = 0; x < imgCopy.getWidth(); x++){
                 int pixlInt = imgCopy.getRGB(x, y);
                 Color pixelColor = new Color(pixlInt);
-                pixelNum++;
-               averageAlpha= pixelColor.getAlpha();
+                totalPixels++;
+                averageAlpha += pixelColor.getAlpha();
             }
         }
-        averageAlpha = averageAlpha/pixelNum;
+        averageAlpha = averageAlpha/totalPixels;
         for(int y = 0; y < imgCopy.getHeight(); y++ ){
             for(int x = 0; x < imgCopy.getWidth(); x++){
                 int pixlInt = imgCopy.getRGB(x, y);
@@ -112,7 +112,7 @@ public class GrayScale {
                 int pixlInt1 = imgCopy.getRGB(x, y);
                 int pixlInt2 = imgCopy.getRGB(x + 1, y);
                 int pixlInt3 = imgCopy.getRGB(x, y+ 1);
-                int pixlInt4 = imgCopy.getRGB(x +1, y + 1);
+                int pixlInt4 = imgCopy.getRGB(x +1, y +1);
                  pixelc = pixlInt1 + pixlInt2 + pixlInt3 + pixlInt4;
                 pixelc = pixelc/4;
                 }catch(Exception e){
@@ -156,7 +156,7 @@ public BufferedImage blur(){
             Math.exp(-((numberx - numbery)/(basis)));
             
             int newPixel = (int) (pixlInt * blurFormula) ;
-            imgCopy.set
+           // imgCopy.set
         }
     }
     
