@@ -1,4 +1,5 @@
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,7 +11,14 @@ public class Convolution {
     private ArrayList<ArrayList<ArrayList<Float>>> matrix3D;
     private ArrayList<ArrayList<Float>> kernal ;
     private ArrayList<ArrayList<ArrayList<Float>>> transposeMatrix; 
-
+    public Float edge[][] = {{-1f,-1f,-1f},{-1f,8f,-1f},{-1f,-1f,-1f}};
+    public Float blur[][] = { {1/9f,1/9f,1/9f},{1/9f,1/9f,1/9f},{1/9f,1/9f,1/9f}};
+    public Float gaussianBlur[][] = {{1/16f,2/16f,1/16f},{2/16f,4/16f,2/16f},{1/16f,2/16f,1/16f}};
+    public Float sharpen[][] = {{0f,-1f,0f},{-1f,5f,-1f}, {0f,-1f,0f}};
+    public Float edge2[][] = {{0f,1f,0f},{1f,8f,1f},{0f,1f,0f}};
+    public Float edge3[][] = {{0f,0f,0f},{-1f,1f,0f},  {0f,0f,0f}};
+    public Float emboss[][] = {  {-2f,-1f,0f}, {-1f,1f,1f},   {0f,1f,2f} };
+    public Float subtract[][] = { {-1/8f,-1/8f,-1/8f},{1/8f,1f,1/8f}, {-1/8f,-1/8f,-1/8f} };
     public Convolution(ArrayList<ArrayList<Float>> kernal, BufferedImage img){
         this.kernal = kernal;
         this.img = img;
@@ -19,6 +27,13 @@ public class Convolution {
     public Convolution(Float[][] kernal, BufferedImage img){
         this.kernal = this.arrayToKernal(kernal);
         this.img = img;
+    }
+
+    public Convolution(BufferedImage img){
+        this.img = img;
+    }    
+    public Convolution(){
+        
     }
 
     public ArrayList<ArrayList<Float>> arrayToKernal(Float [][]matrix){
@@ -39,11 +54,11 @@ public class Convolution {
         for(int z = 0; z < 3;z++){
             matrixOfImage.add(z, new ArrayList<ArrayList<Float>>());
         }
-            for(int y = 0; y < img.getHeight(); y++){
+            for(int y = 0; y < myImage.getHeight(); y++){
                 matrixOfImage.get(0).add(y, new ArrayList<Float>());
                 matrixOfImage.get(1).add(y, new ArrayList<Float>());
                 matrixOfImage.get(2).add(y, new ArrayList<Float>());
-                for(int x = 0; x < img.getWidth();x++){
+                for(int x = 0; x < myImage.getWidth();x++){
                     Color tempColor = new Color(myImage.getRGB(x, y));
                     matrixOfImage.get(0).get(y).add(x, (float) tempColor.getRed() );
                     matrixOfImage.get(1).get(y).add(x, (float) tempColor.getGreen() );
@@ -51,7 +66,6 @@ public class Convolution {
 
                 }
             }
-        //this.matrix3D = matrixOfImage;
         return matrixOfImage;
     }
     public BufferedImage Convolute(){
@@ -102,7 +116,7 @@ public class Convolution {
         return matrixToBufferedImage(transposeMatrix);
     }
 
-    private ArrayList<ArrayList<ArrayList<Float>>> copyMatrixSize(ArrayList<ArrayList<ArrayList<Float>>> matrix){
+    public ArrayList<ArrayList<ArrayList<Float>>> copyMatrixSize(ArrayList<ArrayList<ArrayList<Float>>> matrix){
         for(int channel = 0; channel < 3; channel++){
             for(int y = 0; y <  matrix.get(channel).size(); y++){
                 for(int x = 0; x < matrix.get(channel).get(y).size(); x++){
@@ -125,10 +139,12 @@ public class Convolution {
         return matrix;
     }
     public BufferedImage matrixToBufferedImage (ArrayList<ArrayList<ArrayList<Float>>> matrix) {
-        BufferedImage imgCopy = this.img;
+        int sizeX = matrix.get(0).get(0).size();
+        int sizeY = matrix.get(0).size();
+        BufferedImage img = new BufferedImage(sizeX,sizeY,BufferedImage.TYPE_INT_RGB);
        
-            for(int y = 0; y < img.getHeight(); y++){
-                for(int x = 0; x < img.getWidth();x++){
+            for(int y = 0; y < sizeY; y++){
+                for(int x = 0; x < sizeX;x++){
                     Float red = Math.min(Math.abs(matrix.get(0).get(y).get(x)),1);
                     Float green = Math.min(Math.abs(matrix.get(1).get(y).get(x)),1);
                     Float blue = Math.min(Math.abs(matrix.get(2).get(y).get(x)),1);
@@ -136,11 +152,11 @@ public class Convolution {
 
                     Color c = new Color(red , green ,blue);
 
-                    imgCopy.setRGB(x, y, c.getRGB());
+                    img.setRGB(x, y, c.getRGB());
                 }
             }
         
-        return imgCopy;
+        return img;
     }
      // Normalize range to 0 to 1
      public ArrayList<ArrayList<Float>> normaizePixels2D(ArrayList<ArrayList<Float>> matrix){
