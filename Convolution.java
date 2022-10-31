@@ -1,5 +1,6 @@
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.awt.Color;
@@ -13,6 +14,24 @@ public class Convolution {
     public Convolution(ArrayList<ArrayList<Float>> kernal, BufferedImage img){
         this.kernal = kernal;
         this.img = img;
+    }
+
+    public Convolution(Float[][] kernal, BufferedImage img){
+        this.kernal = this.arrayToKernal(kernal);
+        this.img = img;
+    }
+
+    public ArrayList<ArrayList<Float>> arrayToKernal(Float [][]matrix){
+        ArrayList<ArrayList<Float>> kernal = new ArrayList<ArrayList<Float>>();
+
+        for(int y = 0; y < matrix.length; y++){
+            kernal.add(y,new ArrayList<Float>());
+            for(int x = 0; x < matrix.length; x++){
+                kernal.get(y).add(x, matrix[x][y]);
+            }
+        }
+        System.out.println("Kernal = " + Arrays.toString(kernal.toArray()));
+      return kernal;
     }
 
     public ArrayList<ArrayList<ArrayList<Float>>> imageToMatrix(BufferedImage myImage){
@@ -99,7 +118,7 @@ public class Convolution {
             for(int y = 0; y <  matrix.get(channel).size(); y++){
                 for(int x = 0; x < matrix.get(channel).get(y).size(); x++){
                     matrix.get(channel).get(y).set(x, 0f);
-                    System.out.println(" x  : " + x + ", y = " + y + "\n " + matrix.get(channel).size() + " \n" +  matrix.get(channel).get(0).size());
+                //    System.out.println(" x  : " + x + ", y = " + y + "\n " + matrix.get(channel).size() + " \n" +  matrix.get(channel).get(0).size());
                 }
             }
         }
@@ -113,7 +132,7 @@ public class Convolution {
                     Float red = Math.min(Math.abs(matrix.get(0).get(y).get(x)),1);
                     Float green = Math.min(Math.abs(matrix.get(1).get(y).get(x)),1);
                     Float blue = Math.min(Math.abs(matrix.get(2).get(y).get(x)),1);
-                    System.out.println(red);
+                  //  System.out.println(red);
 
                     Color c = new Color(red , green ,blue);
 
@@ -123,34 +142,60 @@ public class Convolution {
         
         return imgCopy;
     }
-
-    // Normalize range to 0 to 1
-    public ArrayList<ArrayList<ArrayList<Float>>> normaizePixels(ArrayList<ArrayList<ArrayList<Float>>> matrix){
+     // Normalize range to 0 to 1
+     public ArrayList<ArrayList<Float>> normaizePixels2D(ArrayList<ArrayList<Float>> matrix){
         Float smallest = 0f;
         Float largest = 255f;
-        for(int z =0; z < 3;z++){
+        
             for(int y = 0; y < img.getHeight(); y++){
                 for(int x = 0; x < img.getWidth();x++){
-                    largest = matrix.get(z).get(y).get(x) > largest ? matrix.get(z).get(y).get(x): largest;
-                    smallest = matrix.get(z).get(y).get(x) < smallest ? matrix.get(z).get(y).get(x) : smallest; 
+                    largest = matrix.get(y).get(x) > largest ? matrix.get(y).get(x): largest;
+                    smallest = matrix.get(y).get(x) < smallest ? matrix.get(y).get(x) : smallest; 
                 }
             }
-        }
+        
         for(int y = 0; y < img.getHeight(); y++){
             for(int x = 0; x < img.getWidth();x++){
 
-                Float red = matrix.get(0).get(y).get(x);
-                Float green = matrix.get(1).get(y).get(x);
-                Float blue = matrix.get(2).get(y).get(x);
-
-                Float normalRed = (red - smallest)/(largest - smallest);
-                Float normalGreen = (green - smallest)/(largest - smallest);
-                Float normalBlue= (blue - smallest)/(largest - smallest);
+                Float red = matrix.get(y).get(x);
                 
 
-                matrix.get(0).get(y).set(x, normalRed);
-                matrix.get(1).get(y).set(x, normalGreen);
-                matrix.get(2).get(y).set(x, normalBlue);
+                Float normalRed = (red - smallest)/(largest - smallest);
+              
+                
+
+                matrix.get(y).set(x, normalRed);
+             
+            }
+        }
+        return matrix;
+    }
+    // Normalize range to 0 to 1
+    public ArrayList<ArrayList<ArrayList<Float>>> normaizePixels(ArrayList<ArrayList<ArrayList<Float>>> matrix){
+        Float[] smallest = {matrix.get(0).get(0).get(0),matrix.get(1).get(0).get(0), matrix.get(2).get(0).get(0) };
+        Float[] largest = smallest.clone();
+        for(int z =0; z < 3;z++){
+            
+            for(int y = 0; y < img.getHeight(); y++){
+                for(int x = 0; x < img.getWidth();x++){
+                    
+                    largest[z] = matrix.get(z).get(y).get(x) > largest[z] ? matrix.get(z).get(y).get(x): largest[z];
+                   
+                    
+                    smallest[z] = matrix.get(z).get(y).get(x) < smallest[z] ? matrix.get(z).get(y).get(x) : smallest[z]; 
+                }
+            }
+            System.out.print("\nLargest : " + largest[z]);
+        }
+        for(int z =0; z < 3;z++){
+            for(int y = 0; y < img.getHeight(); y++){
+                for(int x = 0; x < img.getWidth();x++){
+
+                    Float channel = matrix.get(z).get(y).get(x);
+                    Float channelNormal = (channel - smallest[z])/(largest[z] - smallest[z]);
+                    matrix.get(z).get(y).set(x, channelNormal);
+    
+                }
             }
         }
         return matrix;
@@ -208,15 +253,7 @@ public class Convolution {
         // [X00]
         // [000]
         // [000]
-        if(Float.isNaN(( this.matrix3D.get(channel).get(pixelLocationY - 1 + yOffsetTop).get(pixelLocationX -1 + xOffsetLeft)))){
-            //System.out.print( this.matrix3D.get(channel).get(pixelLocationY - 1 + yOffsetTop).get(pixelLocationX -1 + xOffsetLeft));
-            System.out.print("True");
-        }
         requiredPixels.get(0).add(0, (float) this.matrix3D.get(channel).get(pixelLocationY - 1 + yOffsetTop).get(pixelLocationX -1 + xOffsetLeft));
-        System.out.println( this.matrix3D.get(channel).get(pixelLocationY - 1 + yOffsetTop).get(pixelLocationX -1 + xOffsetLeft));
-       // System.out.println(pixelLocationY - 1 + yOffsetTop);
-       // System.out.println(pixelLocationX -1 + xOffsetLeft);
-        //System.out.println((float) this.matrix3D.get(channel).get(pixelLocationY - 1 + yOffsetTop).get(pixelLocationX -1 + xOffsetLeft));
       
         // [0X0]
         // [000]
@@ -251,7 +288,7 @@ public class Convolution {
         // [00X]
         requiredPixels.get(2).add(2, (float) this.matrix3D.get(channel).get(pixelLocationY + 1 + yOffsetBottum).get(pixelLocationX + 1 + xOffsetRight) );
 
-        System.out.println("REQUIRED PIXELS AFTER : \n" + requiredPixels.toString());
+        //System.out.println("REQUIRED PIXELS AFTER : \n" + requiredPixels.toString());
 
         return requiredPixels;
     }

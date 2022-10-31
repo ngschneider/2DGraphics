@@ -23,7 +23,7 @@ public class quantization {
 		
 		return ret;
 	}
-	
+	/* 
 	public static void main(String[] args) throws Exception {
 		BufferedImage img = ImageIO.read(new File("/animal.jpg"));
 		
@@ -42,5 +42,5 @@ public class quantization {
 		
 		ImageIO.write(newimg, "png", new File("testes_out/teste.png"));
 	}
-
+*/
 }
