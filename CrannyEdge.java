@@ -14,11 +14,12 @@ public class CrannyEdge {
     
         public CrannyEdge(BufferedImage img){
             this.image = img;
-            grayScale();
-            gaussianBlur();
-            sobelX();
-            sobelY();
-            magnitudeOf2Images(this.sobelX,this.sobelY);
+            this.grayScale();
+            this.gaussianBlur();
+            this.sobelX();
+            this.sobelY();
+            this.magnitudeOf2Images(this.sobelX,this.sobelY);
+          //  this.arctangentOfImage();
         }
         private BufferedImage grayScale(){
             GrayScale gs = new GrayScale(this.image);
@@ -61,17 +62,19 @@ public class CrannyEdge {
                     for(int x = 0; x < magnitudeMatrix.get(channel).get(y).size(); x++){
                         double sum = Math.pow(matrixImg1.get(channel).get(y).get(x),2) + Math.pow(matrixImg2.get(channel).get(y).get(x),2);
                         Float magnitudeI = (float) Math.sqrt(sum);
+                        this.angle( matrixImg2.get(channel).get(y).get(x) ,matrixImg1.get(channel).get(y).get(x));
                         magnitudeMatrix.get(channel).get(y).set(x, magnitudeI);
                     }
                 }
             }
             this.magnitudeImage = conv.matrixToBufferedImage(magnitudeMatrix);
             return this.magnitudeImage;
-
         }
 
-        private BufferedImage arctangentOfImage(){
-
+        // Rounds all angles to 90, 135, 45, and 0 
+        private BufferedImage angle(Float float1, Float float2){
+            double angle = Math.atan2(float2, float1);
+            System.out.println("Angle : " + Math.toDegrees(angle));
             return null;
         }
     
