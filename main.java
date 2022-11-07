@@ -8,6 +8,7 @@ public class main {
     public static void main( String[]arg ){
 
         try{
+            /* 
             BufferedImage img2 = ImageIO.read(new File("./images/segull.jpg"));
             Convolution conv = new Convolution(new Convolution().blur,img2);
             Convolution conv1 = new Convolution(new Convolution().emboss,img2);
@@ -23,17 +24,17 @@ public class main {
             ImageIO.write(conv23.Convolute(), "PNG", new File("./images/Convolution/tigerEdge3.jpg"));
             ImageIO.write(conv3.Convolute(), "PNG", new File("./images/Convolution/tigerSharpen.jpg"));
             ImageIO.write(conv4.Convolute(), "PNG", new File("./images/Convolution/tigerSubtract.jpg"));
-    
+    */
 
 
-            BufferedImage img = ImageIO.read(new File("./images/segull.jpg"));
+            BufferedImage img = ImageIO.read(new File("./images/valve.png"));
             CrannyEdge cranny = new CrannyEdge(img);
         
-            ImageIO.write(cranny.grayScaleImage, "PNG", new File("./images/cranny/crannyGrayscale.jpg"));
-            ImageIO.write(cranny.gaussianBlurImage, "PNG", new File("./images/cranny/crannyGaussian.jpg"));
-            ImageIO.write(cranny.sobelX, "PNG", new File("./images/cranny/crannySobelX.jpg"));
-            ImageIO.write(cranny.sobelY, "PNG", new File("./images/cranny/crannysobelY.jpg"));
-            ImageIO.write(cranny.magnitudeImage, "PNG", new File("./images/cranny/crannyMagnitude.jpg"));
+            ImageIO.write(cranny.grayScaleImage, "PNG", new File("./images/cranny2/crannyGrayscale.jpg"));
+            ImageIO.write(cranny.gaussianBlurImage, "PNG", new File("./images/cranny2/crannyGaussian.jpg"));
+            ImageIO.write(cranny.sobelX, "PNG", new File("./images/cranny2/crannySobelX.jpg"));
+            ImageIO.write(cranny.sobelY, "PNG", new File("./images/cranny2/crannysobelY.jpg"));
+            ImageIO.write(cranny.magnitudeImage, "PNG", new File("./images/cranny2/crannyMagnitude.jpg"));
             
         
         }catch(Exception e){
