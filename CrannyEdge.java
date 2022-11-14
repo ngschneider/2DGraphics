@@ -18,6 +18,7 @@ public class CrannyEdge {
             this.gaussianBlur();
             this.sobelX();
             this.sobelY();
+            System.gc();
             this.magnitudeOf2Images(this.sobelX,this.sobelY);
           //  this.arctangentOfImage();
         }
@@ -56,14 +57,17 @@ public class CrannyEdge {
             ArrayList<ArrayList<ArrayList<Float>>> matrixImg1 = conv.imageToMatrix(img1);
             ArrayList<ArrayList<ArrayList<Float>>> matrixImg2 = conv.imageToMatrix(img2);
             ArrayList<ArrayList<ArrayList<Float>>> magnitudeMatrix = conv.copyMatrixSize(matrixImg2);
-            ArrayList<ArrayList<ArrayList<Float>>> angleMatrix = conv.copyMatrixSize(matrixImg2);
+            ArrayList<ArrayList<ArrayList<Float>>> angleMatrix = conv.imageToMatrix(img1);
 
             for(int channel = 0; channel < 3; channel++){
                 for(int y = 0; y <  magnitudeMatrix.get(channel).size(); y++){
                     for(int x = 0; x < magnitudeMatrix.get(channel).get(y).size(); x++){
                         double sum = Math.pow(matrixImg1.get(channel).get(y).get(x),2) + Math.pow(matrixImg2.get(channel).get(y).get(x),2);
                         Float magnitudeI = (float) Math.sqrt(sum);
-                        angleMatrix.get(channel).get(y).set(x, this.angle( matrixImg2.get(channel).get(y).get(x), matrixImg1.get(channel).get(y).get(x)));
+                        Float angle = this.angle( matrixImg2.get(channel).get(y).get(x), matrixImg1.get(channel).get(y).get(x));
+                        System.out.println(angle);
+                        
+                        angleMatrix.get(channel).get(y).set(x, angle);
                         magnitudeMatrix.get(channel).get(y).set(x, magnitudeI);
                     }
                 }
@@ -100,7 +104,7 @@ public class CrannyEdge {
             return 0f;
         }
         public void nonMaximumSupression(){
-
+            
         }
     
     
